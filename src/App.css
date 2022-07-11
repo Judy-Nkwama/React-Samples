@@ -10,6 +10,6 @@ body, html{
   background: white;
 }
 
-.ListGroupItem{
-  cursor: pointer;
+thead tr{
+  background: rgb(216, 216, 216);
 }

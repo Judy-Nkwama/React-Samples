@@ -14,11 +14,11 @@ return(
                             action
                             active={
                                 (props.state.selectedCategory && 
-                                props.state.selectedCategory.categoryId == cat.categoryId
+                                props.state.selectedCategory.id == cat.id
                                 )  ? true : false 
                             }
                             tag="button"
-                            key={cat.categoryId}
+                            key={cat.id}
                             onClick={ () => props.onSelectedCatChange(cat) }
                         >
                             {cat.categoryName}

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./App.css";
 import { Container, Row, Col } from 'reactstrap';
 import Category from './Components/Category';
@@ -7,20 +7,25 @@ import Navi from "./Components/Navi";
 
 const App = props => {
     
-    let categories = [
-        {categoryId: 1, categoryName : "Italian"},
-        {categoryId: 2, categoryName : "Beverage"},
-        {categoryId: 3, categoryName : "Toast"},
-        {categoryId: 4, categoryName : "Drinks"}
-    ];
+    let categories = [];
     
     const [state, setState] = useState({
         categories : categories,
         selectedCategory : null
-    });   
+    });
+
+    useEffect( () => {
+        fetch("http://localhost:3000/categories")
+        .then(response => response.json())
+        .then(data => {
+            setState({...state, categories : data})
+        })
+        .catch(ex => {
+            console.log(ex.message);
+        })
+    }, [] );
 
     const handleChangeCat = newCat =>{
-        //console.log(newCat);
         setState({...state, selectedCategory : newCat});
     }
 
@@ -30,14 +35,14 @@ return(
             <Navi/>
         </Row>
         <Row className="mt-2">
-            <Col xs="4" className="p-0">
+            <Col xs="4" md="3" lg="2" className="p-0">
                 <Category 
                     state={state}
                     onSelectedCatChange={handleChangeCat}
                 />
             </Col>
-            <Col xs="8">
-                <ProductList selectedCategory={state.selectedCategory}/>
+            <Col xs="8" m="9" lg="10">
+                <ProductList selectedCategory={state.selectedCategory} />
             </Col>
         </Row>
     </Container>
