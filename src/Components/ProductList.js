@@ -1,23 +1,23 @@
 import React, { useState, useEffect } from 'react';
-import {Table} from "reactstrap";
+import { Table, Button } from "reactstrap";
 
 const ProductList = props => {
 
     const [products, setProducts] = useState([]);
     const url = props.selectedCategory ? `http://localhost:3000/products?categoryId=${props.selectedCategory.id}` : "http://localhost:3000/products";
-    
+
     useEffect(() => {
         fetch(url)
-        .then(response => response.json())
-        .then(data => {
-            setProducts(data);
-        })
-        .catch(ex => {
-            console.log(ex.message);
-        });
+            .then(response => response.json())
+            .then(data => {
+                setProducts(data);
+            })
+            .catch(ex => {
+                console.log(ex.message);
+            });
         console.log(products);
     }, [props.selectedCategory]);
-    
+
     return (
         <div>
             <h5>{props.selectedCategory ? `${props.selectedCategory.categoryName} Products` : "Products"}</h5>
@@ -34,11 +34,12 @@ const ProductList = props => {
                         <th> unitPrice </th>
                         <th> unitsInStock </th>
                         <th> Stock value </th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
-                    { products.map( product => {
-                        return(
+                    {products.map(product => {
+                        return (
                             <tr key={product.id}>
                                 <th scope="row"> {product.id} </th>
                                 <td> {product.productName} </td>
@@ -47,6 +48,7 @@ const ProductList = props => {
                                 <td> {product.unitPrice}$ </td>
                                 <td> {product.unitsInStock} </td>
                                 <td> {Math.round(product.unitPrice * product.unitsInStock)}$ </td>
+                                <td><Button onClick={() => props.addToCard({ id: product.id, name: product.productName, quantity: 1, price: product.unitPrice })} className="text-white" color="info"> Add </Button></td>
                             </tr>
                         );
                     })}
