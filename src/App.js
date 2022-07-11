@@ -32,21 +32,23 @@ const App = props => {
     
     const addToCard = newItem => {
         const localCard = Array.from(card);
-        if( localCard.find( item => {
-            const matches = item.name === newItem.name;
-            if(matches) item.quantity++;
-            setCard(localCard);
-            return matches;
-        }) ) return;
-
-        localCard.push(newItem);
+        const priviouslyAdded = localCard.find( item => item.id === newItem.id );
+        if(priviouslyAdded){
+            priviouslyAdded.quantity += 1;
+        }else{
+            localCard.push(newItem);
+        }
         setCard(localCard);
+    };
+
+    const removeFromCard = itemToDelete => {
+       setCard( card.filter( cardItem => cardItem.id != itemToDelete.id ));
     };
 
 return(
     <Container className="main-container h-100">
         <Row>
-            <Navi card={card}/>
+            <Navi removeFromCard={removeFromCard} card={card}/>
         </Row>
         <Row className="mt-2">
             <Col xs="4" md="3" lg="2" className="p-0">
