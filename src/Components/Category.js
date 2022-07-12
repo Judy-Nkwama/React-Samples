@@ -17,7 +17,7 @@ return(
                 key={0}
                 onClick={() => navigate("/products")}
             >
-                All
+                All products
             </ListGroupItem>
             {
                 props.categories.map( cat => {

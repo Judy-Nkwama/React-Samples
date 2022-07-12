@@ -1,22 +1,27 @@
 import React, { useState, useEffect } from "react";
-import { Routes, Route, useSearchParams } from "react-router-dom";
+import { Routes, Route, useSearchParams, useLocation } from "react-router-dom";
 import { Container, Row, Col } from 'reactstrap';
 import Category from './Components/Category';
 import ProductList from './Components/ProductList';
 import Navi from "./Components/Navi";
 import Redirecte from "./Redirecte";
 import Card from "./Components/Card";
+import EmptyList from "./Components/EmptyList";
 import "./App.css";
 
 
 const App = props => {
 
+    
     const [products, setProducts] = useState([]);
     const [ filteredProducts, setFilteredProducts ] = useState([]);
     const [ card, setCard ] = useState([]);
     const [ categories, setCategories] = useState([]);
     const [ searchParam, setSearchParams ] = useSearchParams();
     const [ activeCat, setActiveCat ] = useState();
+    const location = useLocation();
+
+    //console.log(location);
 
     //fetching categories
     useEffect( () => {
@@ -30,32 +35,37 @@ const App = props => {
         })
     }, [] );
 
+    const activeCatSeoUrl = searchParam.get("category");
+    const selectedCategory = categories.find(category => category.seoUrl == activeCatSeoUrl);
+
     //fecthin
     useEffect(() => {
         fetch("http://localhost:3000/products")
             .then(response => response.json())
             .then(data => {
                 setProducts( data );
-                setFilteredProducts( data );
+                setActiveCat(undefined);
+
+                if(location.search.length < 1 ) setFilteredProducts( products );
+                else if(categories.length > 0 && selectedCategory){
+                    setActiveCat(selectedCategory);
+                    setFilteredProducts(products.filter(product => product.categoryId == selectedCategory.id));
+                }else setFilteredProducts([]);
+
             })
             .catch(ex => {
                 console.log(ex.message);
             });
     }, []);
 
-    const activeCatSeoUrl = searchParam.get("category");
-
     useEffect( () => {
-        let selectedCategory;
-        if (categories.length > 0 ){
-            selectedCategory = categories.find( category => category.seoUrl == activeCatSeoUrl );
-            if(selectedCategory){
-                setActiveCat(selectedCategory);
-                setFilteredProducts( products.filter( product => product.categoryId == selectedCategory.id ) );
-            }else{
-                setActiveCat(undefined);
-                setFilteredProducts( products );
-            }
+        if(location.search.length < 1 ) setFilteredProducts( products );
+        else if(selectedCategory){
+            setActiveCat(selectedCategory);
+            setFilteredProducts(products.filter(product => product.categoryId == selectedCategory.id));
+        }else{
+            setActiveCat(undefined);
+            setFilteredProducts([]);
         }
     }, [activeCatSeoUrl]);
     
@@ -90,7 +100,7 @@ return(
                     <Route path="/" element={<Redirecte />} />
                     <Route path="products" element={<ProductList addToCard={addToCard} products={filteredProducts} collectioonTitle={activeCat ? activeCat.categoryName : "All"} />} /> 
                     <Route path="card" element={<Card deleteHadler={removeFromCard} card={card} />} />
-                    <Route path="*" element={<div>404</div>} />
+                    <Route path="*" element={<EmptyList state="404"/>} />
                 </Routes>
             </Col>
         </Row>
