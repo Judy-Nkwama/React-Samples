@@ -1,10 +1,15 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {
     Navbar, NavbarBrand, Nav, UncontrolledDropdown,
-    DropdownToggle, DropdownItem, DropdownMenu, Badge
+    DropdownToggle, DropdownItem, DropdownMenu, Badge,
+    Button
 } from "reactstrap";
+import { useNavigate } from "react-router-dom";
+
 
 const Navi = props => {
+    //console.log("navi");
+    const navigate = useNavigate();
 
     const CardItems = () => {
         if( props.card.length > 0){
@@ -21,6 +26,10 @@ const Navi = props => {
                     })}
                     <DropdownItem divider />
                     <DropdownItem> Total : { Math.round( props.card.reduce( (total, item) => total + (item.price * item.quantity), 0 ) )}$ </DropdownItem>
+                    <DropdownItem divider />
+                    <div className="d-inline justify-content-center">
+                        <Button className="m-auto px-4" onClick={() => navigate("/card")}>Go to card</Button>
+                    </div>
                 </div>
             );
         }else{
@@ -37,7 +46,7 @@ const Navi = props => {
                 <Nav navbar >
                     <UncontrolledDropdown inNavbar nav >
                         <DropdownToggle caret nav > Your Card : {props.card.length} items</DropdownToggle>
-                        <DropdownMenu right>
+                        <DropdownMenu end>
                             <CardItems />
                         </DropdownMenu>
                     </UncontrolledDropdown>

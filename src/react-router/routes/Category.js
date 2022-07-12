@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {Link, Outlet, useParams} from 'react-router-dom';
+import {Link, Outlet, useParams, useSearchParams } from 'react-router-dom';
 
     const Category = props => {
 
@@ -33,11 +33,16 @@ import {Link, Outlet, useParams} from 'react-router-dom';
             })
         }, [params.seoUrl] );
 
-        
-
+        const [searchParams, setSearchParams ] = useSearchParams();
     return(
         <div>
             <h5>Categories Page</h5>
+            <button onClick={() => {
+                let categoryId="abc";
+                let categoryIdaa="abc4";
+                setSearchParams({ abc : "etlm", abc:"eküy", cad:"elkyüky"});
+                console.log(searchParams.getAll("abc"))
+            }}>clivk</button>
             <nav>
                 {categories.map( cat => {
                     return (

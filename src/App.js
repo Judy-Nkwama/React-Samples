@@ -1,34 +1,63 @@
 import React, { useState, useEffect } from "react";
-import "./App.css";
+import { Routes, Route, useSearchParams } from "react-router-dom";
 import { Container, Row, Col } from 'reactstrap';
 import Category from './Components/Category';
 import ProductList from './Components/ProductList';
 import Navi from "./Components/Navi";
+import Redirecte from "./Redirecte";
+import Card from "./Components/Card";
+import "./App.css";
+
 
 const App = props => {
-    
-    let categories = [];
-    
-    const [state, setState] = useState({
-        categories : categories,
-        selectedCategory : null
-    });
-    const [ card, setCard ] = useState([]);
 
+    const [products, setProducts] = useState([]);
+    const [ filteredProducts, setFilteredProducts ] = useState([]);
+    const [ card, setCard ] = useState([]);
+    const [ categories, setCategories] = useState([]);
+    const [ searchParam, setSearchParams ] = useSearchParams();
+    const [ activeCat, setActiveCat ] = useState();
+
+    //fetching categories
     useEffect( () => {
         fetch("http://localhost:3000/categories")
         .then(response => response.json())
         .then(data => {
-            setState({...state, categories : data})
+            setCategories(data)
         })
         .catch(ex => {
             console.log(ex.message);
         })
     }, [] );
 
-    const handleChangeCat = newCat =>{
-        setState({...state, selectedCategory : newCat});
-    };
+    //fecthin
+    useEffect(() => {
+        fetch("http://localhost:3000/products")
+            .then(response => response.json())
+            .then(data => {
+                setProducts( data );
+                setFilteredProducts( data );
+            })
+            .catch(ex => {
+                console.log(ex.message);
+            });
+    }, []);
+
+    const activeCatSeoUrl = searchParam.get("category");
+
+    useEffect( () => {
+        let selectedCategory;
+        if (categories.length > 0 ){
+            selectedCategory = categories.find( category => category.seoUrl == activeCatSeoUrl );
+            if(selectedCategory){
+                setActiveCat(selectedCategory);
+                setFilteredProducts( products.filter( product => product.categoryId == selectedCategory.id ) );
+            }else{
+                setActiveCat(undefined);
+                setFilteredProducts( products );
+            }
+        }
+    }, [activeCatSeoUrl]);
     
     const addToCard = newItem => {
         const localCard = Array.from(card);
@@ -53,12 +82,16 @@ return(
         <Row className="mt-2">
             <Col xs="4" md="3" lg="2" className="p-0">
                 <Category 
-                    state={state}
-                    onSelectedCatChange={handleChangeCat}
+                    categories={categories}
                 />
             </Col>
             <Col xs="8" m="9" lg="10">
-                <ProductList addToCard={addToCard} selectedCategory={state.selectedCategory} />
+                <Routes>
+                    <Route path="/" element={<Redirecte />} />
+                    <Route path="products" element={<ProductList addToCard={addToCard} products={filteredProducts} collectioonTitle={activeCat ? activeCat.categoryName : "All"} />} /> 
+                    <Route path="card" element={<Card deleteHadler={removeFromCard} card={card} />} />
+                    <Route path="*" element={<div>404</div>} />
+                </Routes>
             </Col>
         </Row>
     </Container>

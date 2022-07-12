@@ -1,26 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Table, Button } from "reactstrap";
 
 const ProductList = props => {
-
-    const [products, setProducts] = useState([]);
-    const url = props.selectedCategory ? `http://localhost:3000/products?categoryId=${props.selectedCategory.id}` : "http://localhost:3000/products";
-
-    useEffect(() => {
-        fetch(url)
-            .then(response => response.json())
-            .then(data => {
-                setProducts(data);
-            })
-            .catch(ex => {
-                console.log(ex.message);
-            });
-        console.log(products);
-    }, [props.selectedCategory]);
-
+    //console.log("product list");
+    const products = props.products;
+    
     return (
         <div>
-            <h5>{props.selectedCategory ? `${props.selectedCategory.categoryName} Products` : "Products"}</h5>
+            <h5>{ props.collectioonTitle } Products </h5>
             <Table
                 hover
                 responsive
