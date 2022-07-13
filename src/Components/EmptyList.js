@@ -28,7 +28,7 @@ const EmptyList = props => {
             <Icon />
             <div className='fs-3'>{ props.state == "404" ? "Oops... You are lost!!" : "Oops... Empty list!!"}</div>
             <Button color='secondary' className=' text-white btn-sm mt-3' onClick={() => {
-                navigate("/products");
+                navigate("/products?category=all&pg=1");
                 dispatcher( targetAllProducts() );
             }} > list all the products</Button>
         </div>
