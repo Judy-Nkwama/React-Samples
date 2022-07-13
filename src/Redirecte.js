@@ -8,7 +8,6 @@ const Redirecte = props => {
     useEffect(() => {
         navigate("/products");
     });
-
     return(<>Redirecting...</>);
 }
 export default Redirecte;

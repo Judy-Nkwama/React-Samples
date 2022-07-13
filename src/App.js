@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { Routes, Route, useSearchParams, useLocation } from "react-router-dom";
 import { Container, Row, Col } from 'reactstrap';
 import { useDispatch } from "react-redux";
@@ -11,22 +11,15 @@ import Card from "./Components/Card";
 import EmptyList from "./Components/EmptyList";
 import "./App.css";
 
-
 const App = props => {
 
     const dispatcher = useDispatch();
     const [ searchParam, setSearchParams ] = useSearchParams();
     const location = useLocation();
 
-    //console.log(location);
-
-    let fetchUrl
-
-
-
+    //console.log(location)
     //fetching categories
     useEffect( () => {
-
 
         let categories;
         fetch("http://localhost:3000/categories")
@@ -56,14 +49,11 @@ const App = props => {
                 }else{
                     dispatcher( setToNotegory() );
                 }
-
             }
-            
         })
         .catch(ex => {
             console.log(ex.message);
         });
-
     }, [] );
 
 return(

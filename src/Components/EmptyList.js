@@ -1,8 +1,14 @@
 import React from 'react';
 import { Button } from 'reactstrap';
 import { useNavigate } from 'react-router-dom';
+import { targetAllProducts }from "../redux/features/products/productSlice";
+import { useDispatch } from 'react-redux';
+
 const EmptyList = props => {
+
     const navigate = useNavigate();
+    const dispatcher = useDispatch();
+
     const Icon = state => {
         if(props.state == "404"){
             return(
@@ -21,6 +27,10 @@ const EmptyList = props => {
         <div className="py-5 bg-white rounded text-secondary d-flex flex-column justify-content-center align-items-center h-100 ">
             <Icon />
             <div className='fs-3'>{ props.state == "404" ? "Oops... You are lost!!" : "Oops... Empty list!!"}</div>
+            <Button color='secondary' className=' text-white btn-sm mt-3' onClick={() => {
+                navigate("/products");
+                dispatcher( targetAllProducts() );
+            }} > list all the products</Button>
         </div>
     );
 } 

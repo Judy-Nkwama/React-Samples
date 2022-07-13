@@ -22,7 +22,7 @@ const Navi = props => {
                         return(
                             <DropdownItem key={item.id}> 
                                 <Badge color="danger" onClick={() => dispatcher( removeFromCard(item) )}>x</Badge> 
-                                {" " + item.name + " "}
+                                <span className='text-truncate cardMenuItem' style={{width : "50rem"}} >{" " + item.name + " "}</span>
                                 <Badge color="info">{item.quantity}</Badge>
                             </DropdownItem>
                         );
@@ -30,7 +30,7 @@ const Navi = props => {
                     <DropdownItem divider />
                     <DropdownItem> Total : { Math.round( card.reduce( (total, item) => total + ( parseFloat(item.price) * parseInt(item.quantity) ), 0 ) )}$ </DropdownItem>
                     <DropdownItem divider />
-                    <div className="d-inline justify-content-center">
+                    <div className="d-flex justify-content-center">
                         <Button className="m-auto px-4" onClick={() => navigate("/card")}>Go to card</Button>
                     </div>
                 </div>
@@ -47,7 +47,7 @@ const Navi = props => {
             <Navbar className="bg-white" color="light" expand="md" light >
                 <NavbarBrand className="me-auto" href="/"> Produts App </NavbarBrand>
                 <Nav navbar >
-                    <UncontrolledDropdown inNavbar nav >
+                    <UncontrolledDropdown inNavbar nav className='carBlk' >
                         <DropdownToggle caret nav > Your Card : {card.length} items</DropdownToggle>
                         <DropdownMenu end>
                             <CardItems />
