@@ -13,12 +13,3 @@ body, html{
 thead tr{
   background: rgb(216, 216, 216);
 }
-
-.cardMenuItem{
-  width: 100px;
-}
-.carBlk {
-  display:  flex;
-  width: 100px;
-
-}
