@@ -2,7 +2,8 @@ import React, { useEffect } from "react";
 import { Routes, Route, useSearchParams, useLocation } from "react-router-dom";
 import { Container, Row, Col } from 'reactstrap';
 import { useDispatch } from "react-redux";
-import { setCategories, setAllProducts, setToNotegory, targetAllProducts, selectCategory } from "./redux/features/products/productSlice";
+import { fetchCategoriesGenerator } from "./db-queries/categories";
+import { fetchProductsGenerator } from "./db-queries/products";
 import Category from './Components/Category';
 import ProductList from './Components/ProductList';
 import Navi from "./Components/Navi";
@@ -17,43 +18,16 @@ const App = props => {
     const [ searchParam, setSearchParams ] = useSearchParams();
     const location = useLocation();
 
-    //console.log(location)
-    //fetching categories
+    const fetchCategories = fetchCategoriesGenerator(dispatcher);
+    const fetchProducts = fetchProductsGenerator(location, searchParam, dispatcher);
+
+    //fetching categories and products
     useEffect( () => {
 
-        let categories;
-        fetch("http://localhost:3000/categories")
-        .then(response => response.json())
-        .then(data => {
-            categories = data;
-            dispatcher( setCategories(data) );
-        })
-        .catch(ex => {
-            console.log(ex.message);
-        });
-
-        fetch("http://localhost:3000/products")
-        .then(response => response.json())
-        .then(data => {
-            dispatcher( setAllProducts(data) );
-
-            if(location.search.length == 0 ){
-                dispatcher( targetAllProducts() );
-            }else{
-
-                const catAdrSeoUrl = searchParam.get("category");
-                const cat = categories.find( cat => cat.seoUrl == catAdrSeoUrl);
-
-                if( catAdrSeoUrl && cat ){
-                    dispatcher( selectCategory(cat) );
-                }else{
-                    dispatcher( setToNotegory() );
-                }
-            }
-        })
-        .catch(ex => {
-            console.log(ex.message);
-        });
+        //fetch the categories, once the categories are ready if calls fetchProducts by giving to it the
+        //feched categories list
+        fetchCategories(fetchProducts);
+        
     }, [] );
 
 return(

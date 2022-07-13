@@ -1,17 +1,18 @@
 import React from 'react';
 import { ListGroup, ListGroupItem } from "reactstrap";
-import { useSearchParams, useNavigate } from 'react-router-dom';
+import { useSearchParams, useNavigate, useLocation } from 'react-router-dom';
 import { useSelector, useDispatch } from "react-redux";
 import { selectCategory, targetAllProducts } from "../redux/features/products/productSlice";
 
 const Category = props => {
     //console.log("Categdry");
+    const location = useLocation();
     const [searchParams, setSearchParams] = useSearchParams();
     const navigate = useNavigate();
     const dispatcher = useDispatch();
     const categories = useSelector((state) => state.products.categories);
     const selectedCategoryName = useSelector((state) => state.products.selectedCategory.categoryName );
-
+    const path = location.pathname;
     return (
         <div>
             <h5>Categories</h5>
@@ -30,7 +31,6 @@ const Category = props => {
                 </ListGroupItem>
                 {
                     categories.map(cat => {
-
                         return (
                             <ListGroupItem
                                 action
@@ -38,6 +38,7 @@ const Category = props => {
                                 tag="button"
                                 key={cat.id}
                                 onClick={() => {
+                                    if(path && path != "/products") navigate("/products");
                                     setSearchParams({ category: cat.seoUrl });
                                     dispatcher(selectCategory(cat));
                                 }}
