@@ -12,7 +12,7 @@ export const fetchProductsGenerator = (location, searchParam, dispatcher) => {
             dispatcher(setAllProducts(data));
 
             const catAdrSeoUrl = searchParam.get("category");
-            if (catAdrSeoUrl && catAdrSeoUrl == "all") {
+            if ( (catAdrSeoUrl && catAdrSeoUrl == "all") || location.pathname == "/") {
                 dispatcher(targetAllProducts());
             } else {
                 const cat = categories.find(cat => cat.seoUrl == catAdrSeoUrl);

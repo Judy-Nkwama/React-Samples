@@ -8,7 +8,6 @@ import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { removeFromCard } from "../redux/features/card/cardSlice";
 
-
 const Cart = props => {
     return(
         <button type="button" className="btn btn-ligth position-relative p-1">
@@ -23,7 +22,6 @@ const Cart = props => {
     );
 };
 
-
 const Navi = props => {
     //console.log("navi");
     const navigate = useNavigate();
@@ -36,19 +34,19 @@ const Navi = props => {
                 <div>
                     { card.map( item => {
                         return(
-                            <DropdownItem key={item.id}> 
-                                <Badge color="danger" onClick={() => dispatcher( removeFromCard(item) )}>x</Badge> 
-                                <span className='text-truncate cardMenuItem' style={{width : "50rem"}} >{" " + item.name + " "}</span>
-                                <Badge color="info">{item.quantity}</Badge>
+                            <DropdownItem key={item.id} className="d-flex px-2"> 
+                                <Badge color="danger" className='fs-6 me-1' onClick={() => dispatcher( removeFromCard(item) )}>x</Badge> 
+                                <span className='text-truncate d-inline-block' style={{width : "100px"}} >{ item.name }</span>
+                                <Badge color="info" className='fs-6 ms-1'>{item.quantity}</Badge>
                             </DropdownItem>
                         );
                     })}
                     <DropdownItem divider />
-                    <DropdownItem> Total : { Math.round( card.reduce( (total, item) => total + ( parseFloat(item.price) * parseInt(item.quantity) ), 0 ) )}$ </DropdownItem>
+                    <DropdownItem className="" > Total : { Math.round( card.reduce( (total, item) => total + ( parseFloat(item.price) * parseInt(item.quantity) ), 0 ) )}$ </DropdownItem>
                     <DropdownItem divider />
-                    <div className="d-flex justify-content-center">
+                    <DropdownItem className="d-flex justify-content-center">
                         <Button className="m-auto px-4" onClick={() => navigate("/card")}>Go to card</Button>
-                    </div>
+                    </DropdownItem >
                 </div>
             );
         }else{

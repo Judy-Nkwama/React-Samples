@@ -1,9 +1,8 @@
 import React from 'react';
 import { ListGroup, ListGroupItem } from "reactstrap";
-import { useSearchParams, useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from "react-redux";
 import { selectCategory, targetAllProducts } from "../redux/features/products/productSlice";
-
 
 const CatIcon = props => {
     return(
@@ -14,20 +13,13 @@ const CatIcon = props => {
     );
 };
 
-
 const Category = props => {
-    //console.log("Categdry");
-    const location = useLocation();
-    const [searchParams, setSearchParams] = useSearchParams();
+
+    //console.log("Category");
     const navigate = useNavigate();
     const dispatcher = useDispatch();
     const categories = useSelector((state) => state.products.categories);
-    const selectedCategoryName = useSelector((state) => state.products.selectedCategory.categoryName );
-    const path = location.pathname;
-
-    const categorySearcnParam = searchParams.get("category");
-
-    console.log(categorySearcnParam);
+    const currentCategoryName = useSelector((state) => state.products.selectedCategory.categoryName );
 
     return (
         <div>
@@ -35,7 +27,7 @@ const Category = props => {
             <ListGroup>
                 <ListGroupItem
                     action
-                    active={ categorySearcnParam && categorySearcnParam == "all" ? true : false }
+                    active={ currentCategoryName == "All" }
                     tag="button"
                     key={0}
                     onClick={() => {
@@ -50,12 +42,11 @@ const Category = props => {
                         return (
                             <ListGroupItem
                                 action
-                                active={ categorySearcnParam && categorySearcnParam == cat.seoUrl ? true : false }
+                                active={ currentCategoryName == cat.categoryName }
                                 tag="button"
                                 key={cat.id}
                                 onClick={() => {
                                     navigate(`/products?category=${cat.seoUrl}&pg=1`);
-                                    //setSearchParams({ category: cat.seoUrl });
                                     dispatcher(selectCategory(cat));
                                 }}
                             >
@@ -66,6 +57,6 @@ const Category = props => {
                 }
             </ListGroup>
         </div>
-    )
-}
+    );
+};
 export default Category;

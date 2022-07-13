@@ -13,7 +13,7 @@ import EmptyList from "./Components/EmptyList";
 import "./App.css";
 
 const App = props => {
-
+    //console.log("App")
     const dispatcher = useDispatch();
     const [ searchParam, setSearchParams ] = useSearchParams();
     const location = useLocation();
