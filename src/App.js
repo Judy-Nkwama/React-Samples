@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Routes, Route, useSearchParams, useLocation } from "react-router-dom";
 import { Container, Row, Col } from 'reactstrap';
+import { useDispatch } from "react-redux";
+import { setCategories, setAllProducts, setToNotegory, targetAllProducts, selectCategory } from "./redux/features/products/productSlice";
 import Category from './Components/Category';
 import ProductList from './Components/ProductList';
 import Navi from "./Components/Navi";
@@ -12,94 +14,72 @@ import "./App.css";
 
 const App = props => {
 
-    
-    const [products, setProducts] = useState([]);
-    const [ filteredProducts, setFilteredProducts ] = useState([]);
-    const [ card, setCard ] = useState([]);
-    const [ categories, setCategories] = useState([]);
+    const dispatcher = useDispatch();
     const [ searchParam, setSearchParams ] = useSearchParams();
-    const [ activeCat, setActiveCat ] = useState();
     const location = useLocation();
 
     //console.log(location);
 
+    let fetchUrl
+
+
+
     //fetching categories
     useEffect( () => {
+
+
+        let categories;
         fetch("http://localhost:3000/categories")
         .then(response => response.json())
         .then(data => {
-            setCategories(data)
+            categories = data;
+            dispatcher( setCategories(data) );
         })
         .catch(ex => {
             console.log(ex.message);
-        })
-    }, [] );
+        });
 
-    const activeCatSeoUrl = searchParam.get("category");
-    const selectedCategory = categories.find(category => category.seoUrl == activeCatSeoUrl);
-
-    //fecthin
-    useEffect(() => {
         fetch("http://localhost:3000/products")
-            .then(response => response.json())
-            .then(data => {
-                setProducts( data );
-                setActiveCat(undefined);
+        .then(response => response.json())
+        .then(data => {
+            dispatcher( setAllProducts(data) );
 
-                if(location.search.length < 1 ) setFilteredProducts( products );
-                else if(categories.length > 0 && selectedCategory){
-                    setActiveCat(selectedCategory);
-                    setFilteredProducts(products.filter(product => product.categoryId == selectedCategory.id));
-                }else setFilteredProducts([]);
+            if(location.search.length == 0 ){
+                dispatcher( targetAllProducts() );
+            }else{
 
-            })
-            .catch(ex => {
-                console.log(ex.message);
-            });
-    }, []);
+                const catAdrSeoUrl = searchParam.get("category");
+                const cat = categories.find( cat => cat.seoUrl == catAdrSeoUrl);
 
-    useEffect( () => {
-        if(location.search.length < 1 ) setFilteredProducts( products );
-        else if(selectedCategory){
-            setActiveCat(selectedCategory);
-            setFilteredProducts(products.filter(product => product.categoryId == selectedCategory.id));
-        }else{
-            setActiveCat(undefined);
-            setFilteredProducts([]);
-        }
-    }, [activeCatSeoUrl]);
-    
-    const addToCard = newItem => {
-        const localCard = Array.from(card);
-        const priviouslyAdded = localCard.find( item => item.id === newItem.id );
-        if(priviouslyAdded){
-            priviouslyAdded.quantity += 1;
-        }else{
-            localCard.push(newItem);
-        }
-        setCard(localCard);
-    };
+                if( catAdrSeoUrl && cat ){
+                    dispatcher( selectCategory(cat) );
+                }else{
+                    dispatcher( setToNotegory() );
+                }
 
-    const removeFromCard = itemToDelete => {
-       setCard( card.filter( cardItem => cardItem.id != itemToDelete.id ));
-    };
+            }
+            
+        })
+        .catch(ex => {
+            console.log(ex.message);
+        });
+
+    }, [] );
 
 return(
     <Container className="main-container h-100">
         <Row>
-            <Navi removeFromCard={removeFromCard} card={card}/>
+            <Navi />
         </Row>
         <Row className="mt-2">
             <Col xs="4" md="3" lg="2" className="p-0">
-                <Category 
-                    categories={categories}
-                />
+                <Category />
             </Col>
             <Col xs="8" m="9" lg="10">
                 <Routes>
                     <Route path="/" element={<Redirecte />} />
-                    <Route path="products" element={<ProductList addToCard={addToCard} products={filteredProducts} collectioonTitle={activeCat ? activeCat.categoryName : "All"} />} /> 
-                    <Route path="card" element={<Card deleteHadler={removeFromCard} card={card} />} />
+                    <Route path="products" element={<ProductList />} /> 
+                    <Route path="card" element={<Card />} />
                     <Route path="*" element={<EmptyList state="404"/>} />
                 </Routes>
             </Col>

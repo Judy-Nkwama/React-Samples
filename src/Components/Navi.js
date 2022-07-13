@@ -5,27 +5,30 @@ import {
     Button
 } from "reactstrap";
 import { useNavigate } from "react-router-dom";
-
+import { useSelector, useDispatch } from "react-redux";
+import { removeFromCard } from "../redux/features/card/cardSlice";
 
 const Navi = props => {
     //console.log("navi");
     const navigate = useNavigate();
+    const dispatcher = useDispatch();
+    const card = useSelector( (state) => state.card.cardProducts );
 
     const CardItems = () => {
-        if( props.card.length > 0){
+        if( card.length > 0){
             return(
                 <div>
-                    {props.card.map( item => {
+                    { card.map( item => {
                         return(
                             <DropdownItem key={item.id}> 
-                                <Badge color="danger" onClick={() => props.removeFromCard(item)}>x</Badge> 
+                                <Badge color="danger" onClick={() => dispatcher( removeFromCard(item) )}>x</Badge> 
                                 {" " + item.name + " "}
                                 <Badge color="info">{item.quantity}</Badge>
                             </DropdownItem>
                         );
                     })}
                     <DropdownItem divider />
-                    <DropdownItem> Total : { Math.round( props.card.reduce( (total, item) => total + (item.price * item.quantity), 0 ) )}$ </DropdownItem>
+                    <DropdownItem> Total : { Math.round( card.reduce( (total, item) => total + ( parseFloat(item.price) * parseInt(item.quantity) ), 0 ) )}$ </DropdownItem>
                     <DropdownItem divider />
                     <div className="d-inline justify-content-center">
                         <Button className="m-auto px-4" onClick={() => navigate("/card")}>Go to card</Button>
@@ -45,7 +48,7 @@ const Navi = props => {
                 <NavbarBrand className="me-auto" href="/"> Produts App </NavbarBrand>
                 <Nav navbar >
                     <UncontrolledDropdown inNavbar nav >
-                        <DropdownToggle caret nav > Your Card : {props.card.length} items</DropdownToggle>
+                        <DropdownToggle caret nav > Your Card : {card.length} items</DropdownToggle>
                         <DropdownMenu end>
                             <CardItems />
                         </DropdownMenu>

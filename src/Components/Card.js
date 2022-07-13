@@ -1,9 +1,13 @@
 import React from 'react';
 import {Button, Table} from "reactstrap";
+import { useSelector, useDispatch } from "react-redux";
+import { removeFromCard } from "../redux/features/card/cardSlice";
 
 const Card = props => {
-    const card = props.card;
-    const deleteHadler = props.deleteHadler;
+
+    const dispatcher = useDispatch();
+    const card = useSelector( (state) => state.card.cardProducts );
+
     return(
         <div>
             <h5>Your Card</h5>
@@ -29,7 +33,7 @@ const Card = props => {
                                 <td> {product.quantity} </td>
                                 <td> {product.price}$ </td>
                                 <td> { (parseFloat(product.price) * parseFloat(product.quantity)).toFixed(2) }$ </td>
-                                <td><Button onClick={() => deleteHadler(product)} className="text-white" color="danger"> Delete </Button></td>
+                                <td><Button onClick={() => dispatcher( removeFromCard(product) )} className="text-white" color="danger"> Delete </Button></td>
                             </tr>
                         );
                     })}
