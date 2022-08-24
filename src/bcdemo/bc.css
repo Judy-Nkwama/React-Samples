@@ -1,0 +1,22 @@
+body,
+html {
+    height: 100%;
+    font-size: 14px;
+}
+
+#root {
+    height: 100%;
+    background: rgb(245, 245, 245);
+}
+
+.bg-white {
+    background: white;
+}
+
+thead tr {
+    background: rgb(216, 216, 216);
+}
+
+th {
+    min-width: 100px;
+}

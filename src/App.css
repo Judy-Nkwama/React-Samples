@@ -1,5 +1,6 @@
 body, html{
   height: 100%;
+  font-size: 14px;
 }
 #root{
   height: 100%;
@@ -12,8 +13,4 @@ body, html{
 
 thead tr{
   background: rgb(216, 216, 216);
-}
-
-.DropdownItem{
-  background: black;
 }
